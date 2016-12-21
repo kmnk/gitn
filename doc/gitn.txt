@@ -1,0 +1,54 @@
+*gitn.txt*
+
+Author: kmnk <kmnknmk at gmail.com>
+License: MIT license
+
+==========================================================================
+CONTENTS					*gitn-contents*
+
+Introduction		|gitn-introduction|
+Install			|gitn-install|
+
+
+==========================================================================
+INTRODUCTION					*gitn-introduction*
+
+*gitn* is denite.nvim source and kind set for using git.
+
+
+==========================================================================
+INSTALL						*gitn-install*
+
+If you use dein.nvim, add `kmnk/gitn` repo to your dein setting toml file.
+
+Example: >
+    [[plugins]]
+    repo = 'kmnk/gitn'
+<
+==========================================================================
+EXAMPLE SETTINGS					*gitn-example-settings*
+
+>
+    " custom map for using gitn:status
+    call denite#custom#map('normal', 'a', '<denite:do_action:add>', 'noremap')
+    call denite#custom#map('normal', 'u', '<denite:do_action:unstage>', 'noremap')
+
+    nnoremap [denite] <Nop>
+    nmap <Leader>. [denite]
+
+    nmap [denite]gst   <SID>(git-status)
+
+    nnoremap <silent> <SID>(git-status) :<C-u>Denite gitn:status<CR>
+<
+
+==========================================================================
+USAGE					*gitn-usage*
+
+Pass |gitn| source with gitn subcommand to |:Denite| .
+
+Show status: >
+    :Denite gitn:status
+
+
+==========================================================================
+vim:tw=78:ts=8:ft=help:norl:noet:fen:fdl=0:
