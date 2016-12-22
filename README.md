@@ -20,4 +20,4 @@ Show `git status` results
     3. config
     4. grep
 
-[denite.nvim]:https://github.com/Shougo/denite.nvim
+[denite]:https://github.com/Shougo/denite.nvim
