@@ -39,3 +39,10 @@ class Gitn:
             vim.command('delete')
         if 'filetype' in option: vim.command('setlocal filetype={0}'.format(option['filetype']))
         if 'buftype' in option: vim.command('setlocal buftype={0}'.format(option['buftype']))
+
+    # copy from denite.kind.base
+    @staticmethod
+    def yank(vim, text):
+        vim.call('setreg', '"', text, 'v')
+        if vim.call('has', 'clipboard'):
+            vim.call('setreg', vim.eval('v:register'), text, 'v')

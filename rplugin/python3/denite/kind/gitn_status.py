@@ -47,6 +47,11 @@ class Kind(OpenableFile):
                 'buftype': 'nofile',
             })
 
+    def action_yank(self, context):
+        Gitn.yank(self.vim, "\n".join([
+            t['action__path'] for t in context['targets']
+        ]))
+
     def action_diff_cached(self, context):
         diff = Gitn.system(self.vim, 'git diff --cached ' + self.__join(self.__to_paths(context['targets'])))
         if len(diff) > 0:
