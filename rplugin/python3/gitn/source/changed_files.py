@@ -1,4 +1,4 @@
-# File: status.py
+# File: changed_files.py
 # Author: kmnk <kmnknmk at gmail.com>
 # License: MIT license
 
@@ -22,54 +22,49 @@ TO_DISPLAY = {
 
 HIGHLIGHT = {
     'container': {
-        'name': 'gitn_status_line',
+        'name': 'gitn_change_files_line',
         'pattern': '\\v([^ ]+)? +!?([^ ]+)? *:',
     },
     'containees': [
         {
-            'name': 'gitn_status_unmodified',
+            'name': 'gitn_change_files_unmodified',
             'pattern': '\-',
             'color': 'Comment',
         },
         {
-            'name': 'gitn_status_modified',
+            'name': 'gitn_change_files_modified',
             'pattern': 'Modified',
             'color': 'DiffChange',
         },
         {
-            'name': 'gitn_status_added',
+            'name': 'gitn_change_files_added',
             'pattern': 'Added',
             'color': 'DiffAdd',
         },
         {
-            'name': 'gitn_status_deleted',
+            'name': 'gitn_change_files_deleted',
             'pattern': 'Deleted',
             'color': 'DiffDelete',
         },
         {
-            'name': 'gitn_status_renamed',
+            'name': 'gitn_change_files_renamed',
             'pattern': 'Ranamed',
             'color': 'DiffText',
         },
         {
-            'name': 'gitn_status_copied',
+            'name': 'gitn_change_files_copied',
             'pattern': 'Copied',
             'color': 'DiffText',
         },
         {
-            'name': 'gitn_status_unmerged',
+            'name': 'gitn_change_files_unmerged',
             'pattern': 'Unmerged',
             'color': 'ErrorMsg',
         },
         {
-            'name': 'gitn_status_untracked',
+            'name': 'gitn_change_files_untracked',
             'pattern': 'Untracked',
             'color': 'Comment',
-        },
-        {
-            'name': 'gitn_status_work',
-            'pattern': ' !',
-            'color': 'Todo',
         },
         {
             'name': 'gitn_status_separator',
@@ -85,16 +80,20 @@ class Source(Base):
         super().__init__(vim)
 
         self.name = 'gitn'
-        self.kind = 'gitn_status'
+        self.kind = 'file'
         self.vars = {
             'command': ['git'],
-            'action': ['status'],
-            'default_opts': ['-s'],
-            'separator': ['--'],
+            'action': ['diff-tree'],
+            'default_opts': ['-r', '--no-commit-id'],
         }
 
     def on_init(self, context):
         self.__proc = None
+
+        if len(context['args']) < 3: return
+
+        self.vars['ish'] = ['{0}^..{1}'.format(context['args'][1], context['args'][2])]
+
         context['__directory'] = self.vim.call('expand', context['path'])
 
     def on_close(self, context):
@@ -108,7 +107,7 @@ class Source(Base):
     def define_syntax(self):
         self.vim.command(
             'syntax region ' + self.syntax_name + ' start=// end=/$/ '
-            'contains=gitn_status_line,deniteMatched contained')
+            'contains=gitn_change_files_line,deniteMatched contained')
 
     def gather_candidates(self, context):
         if self.__proc:
@@ -118,9 +117,10 @@ class Source(Base):
         commands += self.vars['command']
         commands += self.vars['action']
         commands += self.vars['default_opts']
-        commands += self.vars['separator']
+        commands += self.vars['ish']
 
         self.__proc = Process(commands, context, context['__directory'])
+
         return self.__async_gather_candidates(context, 2.0)
 
     def __async_gather_candidates(self, context, timeout):
@@ -132,15 +132,13 @@ class Source(Base):
         candidates = []
 
         for line in outs:
-            result = self.__parse_short_status(line, context)
+            result = self.__parse(line, context)
             if result:
-                [path, index, work] = result
+                [path, status] = result
                 candidates.append({
-                    'word': '{1:<9} {3:1}{2:<9}:{0}'.format(
+                    'word': '{1:<9}:{0}'.format(
                         os.path.relpath(path, start=context['__directory']),
-                        TO_DISPLAY[index],
-                        TO_DISPLAY[work],
-                        '!' if work != Status.unmodified else ' '),
+                        TO_DISPLAY[status]),
                     'action__path': path,
                     'action__line': 0,
                     'action__col': 0,
@@ -148,14 +146,13 @@ class Source(Base):
 
         return candidates
 
-    def __parse_short_status(self, line, context):
-        m = re.search(r'^(.)(.)\s*(.+)$', line)
-        if not m or not m.group(3):
-            return []
+    def __parse(self, line, context):
+        m = re.search(r':([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+) (.)\t([^	]+)\t?(.+)?$', line)
+        if not m or not m.group(6): return []
 
-        [index, work, path] = m.groups()
+        [src_mode, dst_mode, src_commit, dst_commit, status, src_path, dst_path] = m.groups()
 
-        if not os.path.isabs(path):
-            path = context['__directory'] + '/' + path
+        if not os.path.isabs(src_path):
+            path = context['__directory'] + '/' + src_path
 
-        return [path, Status.by_short(index), Status.by_short(work)]
+        return [path, Status.by_short(status)]
