@@ -3,7 +3,9 @@
 # License: MIT license
 
 from gitn.source.status import Source as Status
+from gitn.source.log import Source as Log
 from gitn.source.command import Source as Command
+from gitn.source.changed_files import Source as ChangedFiles
 
 class Factory:
 
@@ -24,5 +26,9 @@ class Factory:
     def __create(command, gitn_source, context):
         if command == 'status':
             return Status(gitn_source.vim)
+        elif command == 'log':
+            return Log(gitn_source.vim)
+        elif command == 'changed_files':
+            return ChangedFiles(gitn_source.vim)
         else:
             return Command(gitn_source.vim)
