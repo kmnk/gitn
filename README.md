@@ -12,12 +12,14 @@ Show implemented commands of gitn
 ## gitn:status
 Show `git status` results
 
+## gitn:log
+Show `git log` results
+
 # TODO
 - Implement gitn menu command
 - Implement various subcommands of git !!!
     1. remote and branch
-    2. log
-    3. config
-    4. grep
+    2. config
+    3. grep
 
 [denite]:https://github.com/Shougo/denite.nvim
