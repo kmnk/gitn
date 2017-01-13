@@ -3,6 +3,7 @@
 # License: MIT license
 
 from gitn.enum import Status
+from gitn.util.gitn import Gitn
 from denite.source.base import Base
 from denite.process import Process
 import os
@@ -19,69 +20,64 @@ TO_DISPLAY = {
     Status.untracked  : 'Untracked',
 }
 
-STATUS_SYNTAX = '''
-syntax match gitn_status_line /\\v([^ ]+)? +!?([^ ]+)? *:/ contained keepend
-'''.strip()
-
-STATUS_UNMODIFIED_SYNTAX = (
-    'syntax match gitn_status_unmodified '
-    '/\-/ contained '
-    'containedin=gitn_status_line')
-STATUS_UNMODIFIED_HIGHLIGHT = 'highlight default link gitn_status_unmodified Comment'
-
-STATUS_MODIFIED_SYNTAX = (
-    'syntax match gitn_status_modified '
-    '/Modified/ contained '
-    'containedin=gitn_status_line')
-STATUS_MODIFIED_HIGHLIGHT = 'highlight default link gitn_status_modified DiffChange'
-
-STATUS_ADDED_SYNTAX = (
-    'syntax match gitn_status_added '
-    '/Added/ contained '
-    'containedin=gitn_status_line')
-STATUS_ADDED_HIGHLIGHT = 'highlight default link gitn_status_added DiffAdd'
-
-STATUS_DELETED_SYNTAX = (
-    'syntax match gitn_status_deleted '
-    '/Deleted/ contained '
-    'containedin=gitn_status_line')
-STATUS_DELETED_HIGHLIGHT = 'highlight default link gitn_status_deleted DiffDelete'
-
-STATUS_RENAMED_SYNTAX = (
-    'syntax match gitn_status_renamed '
-    '/Renamed/ contained '
-    'containedin=gitn_status_line')
-STATUS_RENAMED_HIGHLIGHT = 'highlight default link gitn_status_renamed DiffText'
-
-STATUS_COPIED_SYNTAX = (
-    'syntax match gitn_status_copied '
-    '/Copied/ contained '
-    'containedin=gitn_status_line')
-STATUS_COPIED_HIGHLIGHT = 'highlight default link gitn_status_copied DiffText'
-
-STATUS_UNMERGED_SYNTAX = (
-    'syntax match gitn_status_unmerged '
-    '/Unmerged/ contained '
-    'containedin=gitn_status_line')
-STATUS_UNMERGED_HIGHLIGHT = 'highlight default link gitn_status_unmerged ErrorMsg'
-
-STATUS_UNTRACKED_SYNTAX = (
-    'syntax match gitn_status_untracked '
-    '/Untracked/ contained '
-    'containedin=gitn_status_line')
-STATUS_UNTRACKED_HIGHLIGHT = 'highlight default link gitn_status_untracked Comment'
-
-STATUS_WORK_SYNTAX = (
-    'syntax match gitn_status_work '
-    '/ !/ contained '
-    'containedin=gitn_status_line')
-STATUS_WORK_HIGHLIGHT = 'highlight default link gitn_status_work Todo'
-
-STATUS_SEPARATOR_SYNTAX = (
-    'syntax match gitn_status_separator '
-    '/:/ contained '
-    'containedin=gitn_status_line')
-STATUS_SEPARATOR_HIGHLIGHT = 'highlight default link gitn_status_separator Comment'
+HIGHLIGHT = {
+    'container': {
+        'name': 'gitn_status_line',
+        'pattern': '\\v([^ ]+)? +!?([^ ]+)? *:',
+    },
+    'containees': [
+        {
+            'name': 'gitn_status_unmodified',
+            'pattern': '\-',
+            'color': 'Comment',
+        },
+        {
+            'name': 'gitn_status_modified',
+            'pattern': 'Modified',
+            'color': 'DiffChange',
+        },
+        {
+            'name': 'gitn_status_added',
+            'pattern': 'Added',
+            'color': 'DiffAdd',
+        },
+        {
+            'name': 'gitn_status_deleted',
+            'pattern': 'Deleted',
+            'color': 'DiffDelete',
+        },
+        {
+            'name': 'gitn_status_renamed',
+            'pattern': 'Ranamed',
+            'color': 'DiffText',
+        },
+        {
+            'name': 'gitn_status_copied',
+            'pattern': 'Copied',
+            'color': 'DiffText',
+        },
+        {
+            'name': 'gitn_status_unmerged',
+            'pattern': 'Unmerged',
+            'color': 'ErrorMsg',
+        },
+        {
+            'name': 'gitn_status_untracked',
+            'pattern': 'Untracked',
+            'color': 'Comment',
+        },
+        {
+            'name': 'gitn_status_work',
+            'pattern': ' !',
+            'color': 'Todo',
+        },
+        {
+            'name': 'gitn_status_separator',
+            'pattern': ':',
+            'color': 'Comment',
+        },
+    ]
+}
 
 class Source(Base):
 
@@ -95,7 +91,6 @@ class Source(Base):
             'action': ['status'],
             'default_opts': ['-s'],
             'separator': ['--'],
-            'final_opts': ['.'],
         }
 
     def on_init(self, context):
@@ -108,33 +103,12 @@ class Source(Base):
             self.__proc = None
 
     def highlight(self):
-        self.vim.command(STATUS_SYNTAX)
-        self.vim.command(STATUS_UNMODIFIED_SYNTAX)
-        self.vim.command(STATUS_UNMODIFIED_HIGHLIGHT)
-        self.vim.command(STATUS_MODIFIED_SYNTAX)
-        self.vim.command(STATUS_MODIFIED_HIGHLIGHT)
-        self.vim.command(STATUS_ADDED_SYNTAX)
-        self.vim.command(STATUS_ADDED_HIGHLIGHT)
-        self.vim.command(STATUS_DELETED_SYNTAX)
-        self.vim.command(STATUS_DELETED_HIGHLIGHT)
-        self.vim.command(STATUS_RENAMED_SYNTAX)
-        self.vim.command(STATUS_RENAMED_HIGHLIGHT)
-        self.vim.command(STATUS_COPIED_SYNTAX)
-        self.vim.command(STATUS_COPIED_HIGHLIGHT)
-        self.vim.command(STATUS_UNMERGED_SYNTAX)
-        self.vim.command(STATUS_UNMERGED_HIGHLIGHT)
-        self.vim.command(STATUS_UNTRACKED_SYNTAX)
-        self.vim.command(STATUS_UNTRACKED_HIGHLIGHT)
-        self.vim.command(STATUS_WORK_SYNTAX)
-        self.vim.command(STATUS_WORK_HIGHLIGHT)
-        self.vim.command(STATUS_SEPARATOR_SYNTAX)
-        self.vim.command(STATUS_SEPARATOR_HIGHLIGHT)
-        self.vim.command('highlight default link deniteGrepInput Function')
+        Gitn.highlight(self.vim, HIGHLIGHT)
 
     def define_syntax(self):
         self.vim.command(
             'syntax region ' + self.syntax_name + ' start=// end=/$/ '
-            'contains=gitn_status_line contained')
+            'contains=gitn_status_line,deniteMatched contained')
 
     def gather_candidates(self, context):
         if self.__proc:
@@ -145,7 +119,6 @@ class Source(Base):
         commands += self.vars['action']
         commands += self.vars['default_opts']
         commands += self.vars['separator']
-        commands += self.vars['final_opts']
 
         self.__proc = Process(commands, context, context['__directory'])
         return self.__async_gather_candidates(context, 2.0)
