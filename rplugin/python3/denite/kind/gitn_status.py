@@ -66,6 +66,7 @@ class Kind(OpenableFile):
     def action_checkin(self, context): self.action_commit(context)
     def action_ci(self, context): self.action_commit(context)
     def action_ciam(self, context): self.action_commit_amend(context)
+    def action_amend(self, context): self.action_commit_amend(context)
     def action_co(self, context): self.action_checkout(context)
     def action_di(self, context): self.action_diff(context)
     def action_dic(self, context): self.action_diff_cached(context)
