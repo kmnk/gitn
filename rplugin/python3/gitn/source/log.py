@@ -64,10 +64,15 @@ class Source(Base):
                 '--pretty=format:"%H","%P","%an","%ae","%ad","%at","%cn","%ce","%cd","%ct","%s"',
             ],
             'separator': ['--'],
+            'file': [''],
         }
 
     def on_init(self, context):
         self.__proc = None
+
+        if len(context['args']) < 2: return
+
+        self.vars['file'] = [context['args'][1]]
 
     def on_close(self, context):
         if self.__proc:
@@ -92,6 +97,7 @@ class Source(Base):
         commands += self.vars['action']
         commands += self.vars['default_opts']
         commands += self.vars['separator']
+        commands += self.vars['file']
 
         self.__proc = Process(commands, context, self.vim.call('expand', context['path']))
         return self.__async_gather_candidates(context, 2.0)
