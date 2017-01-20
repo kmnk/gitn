@@ -61,7 +61,7 @@ class Source(Base):
             'default_opts': [
                 '--date=default',
                 '--graph',
-                '--pretty=format:"%H","%P","%an","%ae","%ad","%at","%cn","%ce","%cd","%ct","%s"',
+                '--pretty=format:":::%H:::%P:::%an:::%ae:::%ad:::%at:::%cn:::%ce:::%cd:::%ct:::%s:::"',
             ],
             'separator': ['--'],
             'file': [''],
@@ -113,7 +113,7 @@ class Source(Base):
         for line in outs:
             result = self.__parse(line)
             if result:
-                if 'subject' in result:
+                if 'subject' in result and result['subject'] != '':
                     candidates.append({
                         'word': '{0} {1}: {2} : {3}'.format(
                             time.strftime('%Y/%m/%d %H:%M', time.gmtime(result['author']['time'])),
@@ -131,12 +131,18 @@ class Source(Base):
         return candidates
 
     def __parse(self, line):
-        m = re.search(r'^([^"]+)(?:"([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)")?$', line)
-        if not m or not m.group(1): return {}
 
-        if not m.group(8): return { 'graph': m.group(1) }
+        m = re.search(r'^([*|/\\ ]+)\s?(.+)?$', line)
 
-        [graph, own_hash, parent_hash, author_name, author_email, author_date, author_time, committer_name, committer_email, committer_date, committer_time, subject] = m.groups()
+        [graph, value] = m.groups()
+
+        if not m or not m.group(2): return { 'graph': graph }
+
+        splited = value.split(':::')
+
+        if len(splited) <= 1: return { 'graph': graph }
+
+        [own_hash, parent_hash, author_name, author_email, author_date, author_time, committer_name, committer_email, committer_date, committer_time, subject] = splited[1:-1]
 
         return {
             'graph': graph,
