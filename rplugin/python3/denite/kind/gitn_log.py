@@ -55,11 +55,11 @@ class Kind(Base):
         if len(targets) == 0:
             return
         elif len(targets) == 1:
-            f = targets[0]['action__log']['hash']['own'] + '^'
+            f = targets[0]['action__log']['hash']['own']
             t = targets[0]['action__log']['hash']['own']
         else:
             sorted_targets = self.__sort_by_committer_time(targets)
-            f = sorted_targets[0]['action__log']['hash']['own'] + '^'
+            f = sorted_targets[0]['action__log']['hash']['own']
             t = sorted_targets[-1]['action__log']['hash']['own']
 
         self.vim.call(
