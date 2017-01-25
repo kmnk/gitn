@@ -121,7 +121,8 @@ class Source(Base):
                             result['author']['name'],
                             result['subject'],
                         ),
-                        'action__log': result
+                        'action__log': result,
+                        'action__path': context['args'][1] if len(context['args']) >= 2 else '',
                     })
                 elif 'graph' in result:
                     candidates.append({
