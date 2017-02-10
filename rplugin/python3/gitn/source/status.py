@@ -48,7 +48,7 @@ HIGHLIGHT = {
         },
         {
             'name': 'gitn_status_renamed',
-            'pattern': 'Ranamed',
+            'pattern': 'Renamed',
             'color': 'DiffText',
         },
         {
@@ -134,14 +134,15 @@ class Source(Base):
         for line in outs:
             result = self.__parse_short_status(line, context)
             if result:
-                [path, index, work] = result
+                [paths, word, index, work] = result
                 candidates.append({
                     'word': '{1:<9} {3:1}{2:<9}:{0}'.format(
-                        os.path.relpath(path, start=context['__directory']),
+                        os.path.relpath(word, start=context['__directory']),
                         TO_DISPLAY[index],
                         TO_DISPLAY[work],
                         '!' if work != Status.unmodified else ' '),
-                    'action__path': path,
+                    'action__path': paths[0],
+                    'action__paths': paths,
                     'action__line': 0,
                     'action__col': 0,
                 })
@@ -155,7 +156,15 @@ class Source(Base):
 
         [index, work, path] = m.groups()
 
-        if not os.path.isabs(path):
-            path = context['__directory'] + '/' + path
+        index_status = Status.by_short(index)
+        work_status = Status.by_short(work)
 
-        return [path, Status.by_short(index), Status.by_short(work)]
+        # TODO: refactor to more simple logic
+        if index_status == Status.renamed:
+            m = re.search(r'^(.+)\s+->\s+(.+)$', path)
+            [path_from, path_to] = m.groups()
+            paths = [p if not os.path.isabs(p) else context['__directory'] + '/' + p for p in [path_from, path_to]]
+        else:
+            paths = [p if not os.path.isabs(p) else context['__directory'] + '/' + p for p in [path]]
+
+        return [paths, path, index_status, work_status]
