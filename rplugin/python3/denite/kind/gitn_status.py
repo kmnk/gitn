@@ -74,4 +74,6 @@ class Kind(OpenableFile):
     def __join(self, paths): return ' '.join(paths)
 
     def __to_paths(self, targets):
-        return [t['action__path'] for t in targets]
+        paths = []
+        for p in [t['action__paths'] for t in targets]: paths.extend(p)
+        return paths
