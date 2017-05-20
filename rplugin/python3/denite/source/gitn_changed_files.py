@@ -1,13 +1,14 @@
-# File: changed_files.py
+# File: gitn_changed_files.py
 # Author: kmnk <kmnknmk at gmail.com>
 # License: MIT license
 
 from gitn.enum import Status
 from gitn.util.gitn import Gitn
-from denite.source.base import Base
 from denite.process import Process
 import os
 import re
+
+from .gitn import Source as Base
 
 TO_DISPLAY = {
     Status.unmodified : '-', # Unmodified
@@ -79,20 +80,21 @@ class Source(Base):
     def __init__(self, vim):
         super().__init__(vim)
 
-        self.name = 'gitn'
+        self.name = 'gitn_changed_files'
         self.kind = 'file'
         self.vars = {
             'command': ['git'],
             'action': ['diff-tree'],
             'default_opts': ['-r', '--no-commit-id'],
+            'ish': [],
         }
 
     def on_init(self, context):
         self.__proc = None
 
-        if len(context['args']) < 3: return
+        if len(context['args']) < 2: return
 
-        self.vars['ish'] = ['{0}^..{1}'.format(context['args'][1], context['args'][2])]
+        self.vars['ish'] = ['{0}^..{1}'.format(context['args'][0], context['args'][1])]
 
         context['__directory'] = self.vim.call('expand', context['path'])
 

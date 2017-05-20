@@ -64,7 +64,7 @@ class Kind(Base):
 
         self.vim.call(
             'denite#helper#call_denite',
-            'Denite', 'gitn:changed_files:{0}:{1}'.format(f, t),
+            'Denite', 'gitn_changed_files:{0}:{1}'.format(f, t),
             context['firstline'], context['lastline'])
 
     def action_diff(self, context):
