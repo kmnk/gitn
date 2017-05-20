@@ -1,13 +1,14 @@
-# File: log.py
+# File: gitn_log.py
 # Author: kmnk <kmnknmk at gmail.com>
 # License: MIT license
 
 from gitn.util.gitn import Gitn
-from denite.source.base import Base
 from denite.process import Process
 import os
 import re
 import time
+
+from .gitn import Source as Base
 
 DATE_GRAPH_HIGHLIGHT = {
     'container': {
@@ -53,7 +54,7 @@ class Source(Base):
     def __init__(self, vim):
         super().__init__(vim)
 
-        self.name = 'gitn'
+        self.name = 'gitn_log'
         self.kind = 'gitn_log'
         self.vars = {
             'command': ['git'],

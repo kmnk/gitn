@@ -1,13 +1,14 @@
-# File: status.py
+# File: gitn_status.py
 # Author: kmnk <kmnknmk at gmail.com>
 # License: MIT license
 
 from gitn.enum import Status
 from gitn.util.gitn import Gitn
-from denite.source.base import Base
 from denite.process import Process
 import os
 import re
+
+from .gitn import Source as Base
 
 TO_DISPLAY = {
     Status.unmodified : '-', # Unmodified
@@ -84,7 +85,7 @@ class Source(Base):
     def __init__(self, vim):
         super().__init__(vim)
 
-        self.name = 'gitn'
+        self.name = 'gitn_status'
         self.kind = 'gitn_status'
         self.vars = {
             'command': ['git'],

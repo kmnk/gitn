@@ -9,10 +9,10 @@ Gitn is [Denite.nvim][denite] source and kind set for using git
 ## gitn(not implemented)
 Show implemented commands of gitn
 
-## gitn:status
+## gitn_status
 Show `git status` results
 
-## gitn:log
+## gitn_log
 Show `git log` results
 
 # TODO

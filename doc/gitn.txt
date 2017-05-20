@@ -29,7 +29,7 @@ Example: >
 EXAMPLE SETTINGS					*gitn-example-settings*
 
 >
-    " custom map for using gitn:status
+    " custom map for using gitn_status
     call denite#custom#map('insert', '<C-j>', '<denite:move_to_next_line>', 'noremap')
     call denite#custom#map('insert', '<C-k>', '<denite:move_to_previous_line>', 'noremap')
     call denite#custom#map('insert', '<C-k>', '<denite:move_to_previous_line>', 'noremap')
@@ -47,8 +47,8 @@ EXAMPLE SETTINGS					*gitn-example-settings*
     nmap [denite]gst <SID>(git-status)
     nmap [denite]gl <SID>(git-log)
 
-    nnoremap <silent> <SID>(git-status) :<C-u>Denite gitn:status<CR>
-    nnoremap <silent> <SID>(git-status) :<C-u>Denite gitn:log<CR>
+    nnoremap <silent> <SID>(git-status) :<C-u>Denite gitn_status<CR>
+    nnoremap <silent> <SID>(git-status) :<C-u>Denite gitn_log<CR>
 <
 
 ==========================================================================
@@ -57,10 +57,10 @@ USAGE					*gitn-usage*
 Pass |gitn| source with gitn subcommand to |:Denite| .
 
 Show status: >
-    :Denite gitn:status
+    :Denite gitn_status
 
 Show log: >
-    :Denite gitn:log
+    :Denite gitn_log
 
 
 ==========================================================================

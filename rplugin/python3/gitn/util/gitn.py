@@ -51,14 +51,6 @@ class Gitn:
             vim.command('startinsert')
 
     @staticmethod
-    def restart(vim, command, context):
-        # TODO: 実行時の mode その他のオプションの維持。 source の維持はどうするか
-        vim.call(
-            'denite#helper#call_denite',
-            'Denite', '-mode={0} gitn:{1}'.format(context['mode'], command),
-            context['firstline'], context['lastline'])
-
-    @staticmethod
     def open_window(vim, option={}):
         window = option['window'] if 'window' in option else Window.tab
         vim.command(Window.to_open_blank_command(window))
