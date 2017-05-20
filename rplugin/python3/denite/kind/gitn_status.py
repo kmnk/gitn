@@ -14,14 +14,14 @@ class Kind(OpenableFile):
 
         self.name = 'gitn_status'
         self.default_action = 'open'
+        self.persist_actions += ['add', 'reset_head', 'checkout', 'unstage']
+        self.redraw_actions += ['add', 'reset_head', 'checkout', 'unstage']
 
     def action_add(self, context):
         Gitn.system(self.vim, 'git add ' + self.__join(self.__to_paths(context['targets'])))
-        Gitn.restart(self.vim, 'status', context)
 
     def action_reset_head(self, context):
         Gitn.system(self.vim, 'git reset HEAD ' + self.__join(self.__to_paths(context['targets'])))
-        Gitn.restart(self.vim, 'status', context)
 
     def action_commit(self, context):
         Gitn.termopen(self.vim,
@@ -35,7 +35,6 @@ class Kind(OpenableFile):
 
     def action_checkout(self, context):
         Gitn.system(self.vim, 'git checkout ' + self.__join(self.__to_paths(context['targets'])))
-        Gitn.restart(self.vim, 'status', context)
 
     def action_diff(self, context):
         diff = Gitn.system(self.vim, 'git diff ' + self.__join(self.__to_paths(context['targets'])))
