@@ -73,7 +73,7 @@ class Source(Base):
 
         if len(context['args']) < 2: return
 
-        self.vars['file'] = [context['args'][1]]
+        self.vars['file'] = [context['args'][0]]
 
     def on_close(self, context):
         if self.__proc:
