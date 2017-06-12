@@ -71,7 +71,7 @@ class Source(Base):
     def on_init(self, context):
         self.__proc = None
 
-        if len(context['args']) < 2: return
+        if len(context['args']) < 1: return
 
         self.vars['file'] = [context['args'][0]]
 
