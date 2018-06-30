@@ -18,6 +18,19 @@ class Window(Enum):
         if window == cls.vsplit: return 'vnew'
         return 'enew'
 
+    @classmethod
+    def has(cls, value):
+        value = value.lower()
+        for name, member in cls.__members__.items():
+            if name == value: return True
+        return False
+
+    @classmethod
+    def by(cls, value):
+        value = value.lower()
+        for name, member in cls.__members__.items():
+            if name == value: return member
+        raise ValueError()
 
 @unique
 class Status(Enum):
