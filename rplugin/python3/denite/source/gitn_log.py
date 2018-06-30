@@ -2,6 +2,7 @@
 # Author: kmnk <kmnknmk at gmail.com>
 # License: MIT license
 
+from gitn.enum import Window
 from gitn.util.gitn import Gitn
 from denite.process import Process
 import os
@@ -66,15 +67,22 @@ class Source(Base):
             ],
             'separator': ['--'],
             'file': [''],
+            'window': 'tab',
         }
 
     def on_init(self, context):
         self.__proc = None
 
-        if len(context['args']) < 1:
-            self.vars['file'] = ['']
-        else:
+        if len(context['args']) >= 1:
             self.vars['file'] = [context['args'][0]]
+        else:
+            self.vars['file'] = ['']
+
+        if len(context['args']) >= 2:
+            if Window.has(context['args'][1]):
+                self.vars['window'] = context['args'][1]
+            else:
+                self.vars['window'] = 'tab'
 
     def on_close(self, context):
         if self.__proc:
@@ -124,7 +132,8 @@ class Source(Base):
                             result['subject'],
                         ),
                         'action__log': result,
-                        'action__path': context['args'][1] if len(context['args']) >= 2 else '',
+                        'action__path': context['args'][0] if len(context['args']) >= 1 else '',
+                        'action__window': self.vars['window'],
                     })
                 elif 'graph' in result:
                     candidates.append({

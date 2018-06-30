@@ -84,9 +84,11 @@ class Kind(Base):
             t,
             self.__join(self.__to_paths(targets))
         ))
+
+        window = targets[0]['action__window']
         if len(diff) > 0:
             Gitn.open_window(self.vim, {
-                'window': Window.tab,
+                'window': Window.by(window) if Window.has(window) else Window.tab,
                 'text': diff,
                 'filetype': 'diff',
                 'buftype': 'nofile',
