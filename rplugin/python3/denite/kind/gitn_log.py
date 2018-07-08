@@ -2,6 +2,8 @@
 # Author: kmnk <kmnknmk at gmail.com>
 # License: MIT license
 
+from itertools import filterfalse
+
 from gitn.enum import Window
 from gitn.util.gitn import Gitn
 
@@ -14,6 +16,9 @@ class Kind(Base):
 
         self.name = 'gitn_log'
         self.default_action = 'yank'
+        self.persist_actions += ['preview']
+        self._previewed_target = {}
+        self._preview_window_id = None
 
     def action_revert(self, context):
         targets = self.__sort_by_committer_time([t for t in context['targets'] if 'action__log' in t])
@@ -69,15 +74,10 @@ class Kind(Base):
 
     def action_diff(self, context):
         targets = [t for t in context['targets'] if 'action__log' in t]
-        if len(targets) == 0:
-            return
-        elif len(targets) == 1:
-            f = targets[0]['action__log']['hash']['own'] + '^'
-            t = targets[0]['action__log']['hash']['own']
-        else:
-            sorted_targets = self.__sort_by_committer_time(targets)
-            f = sorted_targets[0]['action__log']['hash']['own'] + '^'
-            t = sorted_targets[-1]['action__log']['hash']['own']
+
+        f, t = self.__resolve_diff_range(context)
+
+        if not f or not t: return
 
         diff = Gitn.system(self.vim, 'git diff {0}..{1} -- {2}'.format(
             f,
@@ -98,6 +98,66 @@ class Kind(Base):
         Gitn.yank(self.vim, "\n".join([
             t['action__log']['hash']['own'] for t in context['targets'] if 'action__log' in t
         ]))
+
+    def action_preview(self, context):
+        targets = [t for t in context['targets'] if 'action__log' in t]
+
+        target = context['targets'][0]
+
+        if (not context['auto_preview']
+                and self.__get_preview_window()
+                and self._previewed_target == target):
+            self.vim.command('pclose!')
+            self._preview_window_id = None
+            return
+
+        prev_id = self.vim.call('win_getid')
+
+        # TODO: implement more beautiful .. !
+        if (self._preview_window_id
+                and self.vim.call('win_gotoid', self._preview_window_id) == 1):
+            pass
+        else:
+            self.vim.command('pedit! gitn_log_temporary_file_for_preview') # ugly..
+            self.vim.command('wincmd P')
+            self.vim.command('enew')
+            self.vim.command('setlocal filetype=diff')
+            self.vim.command('setlocal buftype=nofile')
+            self._preview_window_id = self.vim.call('win_getid')
+
+        f, t = self.__resolve_diff_range(context)
+
+        if f and t:
+            self.vim.command('silent read !git diff {0}..{1} -- {2}'.format(
+                f,
+                t,
+                self.__join(self.__to_paths(targets))
+            ))
+            self.vim.command('keepjumps normal G')
+            self.vim.command('keepjumps normal gg')
+            self.vim.command('delete')
+
+        self.vim.call('win_gotoid', prev_id)
+        self._previewed_target = target
+
+    def __get_preview_window(self):
+        return next(filterfalse(lambda x:
+                                not x.options['previewwindow'],
+                                self.vim.windows), None)
+
+    def __resolve_diff_range(self, context):
+        targets = [t for t in context['targets'] if 'action__log' in t]
+        if len(targets) == 0:
+            return (None, None)
+        elif len(targets) == 1:
+            f = targets[0]['action__log']['hash']['own'] + '^'
+            t = targets[0]['action__log']['hash']['own']
+        else:
+            sorted_targets = self.__sort_by_committer_time(targets)
+            f = sorted_targets[0]['action__log']['hash']['own'] + '^'
+            t = sorted_targets[-1]['action__log']['hash']['own']
+
+        return (f, t)
 
     def __sort_by_committer_time(self, targets):
         return sorted([t for t in targets if 'action__log' in t], key=lambda t: t['action__log']['committer']['time'])
