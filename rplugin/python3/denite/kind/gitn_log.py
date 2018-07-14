@@ -133,8 +133,8 @@ class Kind(Base):
                 t,
                 self.__join(self.__to_paths(targets))
             ))
-            self.vim.command('keepjumps normal G')
-            self.vim.command('keepjumps normal gg')
+            self.vim.command('keepjumps normal! G')
+            self.vim.command('keepjumps normal! gg')
             self.vim.command('delete')
 
         self.vim.call('win_gotoid', prev_id)
