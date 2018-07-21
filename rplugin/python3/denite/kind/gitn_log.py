@@ -92,6 +92,7 @@ class Kind(Base):
                 'text': diff,
                 'filetype': 'diff',
                 'buftype': 'nofile',
+                'bufname': t[0:7],
             })
 
     def action_yank(self, context):
@@ -135,6 +136,7 @@ class Kind(Base):
             ))
             self.vim.command('keepjumps normal! G')
             self.vim.command('keepjumps normal! gg')
+            self.vim.command('file {0}'.format(t[0:7]))
             self.vim.command('delete')
 
         self.vim.call('win_gotoid', prev_id)

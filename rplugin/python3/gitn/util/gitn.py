@@ -61,6 +61,7 @@ class Gitn:
             vim.command('delete')
         if 'filetype' in option: vim.command('setlocal filetype={0}'.format(option['filetype']))
         if 'buftype' in option: vim.command('setlocal buftype={0}'.format(option['buftype']))
+        if 'bufname' in option: vim.command('file {0}'.format(option['bufname']))
 
     @staticmethod
     def confirm(vim, text):
