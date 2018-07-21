@@ -6,7 +6,6 @@ import os
 import re
 import sys
 
-print(os.path.dirname(__file__))
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
 from denite.source.base import Base

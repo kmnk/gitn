@@ -1,6 +1,7 @@
 # gitn
 
 [![Join the chat at https://gitter.im/kmnk/gitn](https://badges.gitter.im/kmnk/gitn.svg)](https://gitter.im/kmnk/gitn?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Gitn is [Denite.nvim][denite] source and kind set for using git
 
 # Requirements
