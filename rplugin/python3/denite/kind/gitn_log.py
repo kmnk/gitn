@@ -114,6 +114,8 @@ class Kind(Base):
 
         prev_id = self.vim.call('win_getid')
 
+        f, t = self.__resolve_diff_range(context)
+
         # TODO: implement more beautiful .. !
         if (self._preview_window_id
                 and self.vim.call('win_gotoid', self._preview_window_id) == 1):
@@ -125,8 +127,6 @@ class Kind(Base):
             self.vim.command('setlocal filetype=diff')
             self.vim.command('setlocal buftype=nofile')
             self._preview_window_id = self.vim.call('win_getid')
-
-        f, t = self.__resolve_diff_range(context)
 
         if f and t:
             self.vim.command('silent read !git diff {0}..{1} -- {2}'.format(
