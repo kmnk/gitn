@@ -92,7 +92,7 @@ class Kind(Base):
                 'text': diff,
                 'filetype': 'diff',
                 'buftype': 'nofile',
-                'bufname': 'gitn_diff_{0}'.format(t[0:7]),
+                'bufname': t[0:7],
             })
 
     def action_yank(self, context):
@@ -119,7 +119,7 @@ class Kind(Base):
                 and self.vim.call('win_gotoid', self._preview_window_id) == 1):
             pass
         else:
-            self.vim.command('pedit! gitn_diff_{0}'.format(t[0:7])) # ugly..
+            self.vim.command('pedit! gitn_log_temporary_file_for_preview') # ugly..
             self.vim.command('wincmd P')
             self.vim.command('enew')
             self.vim.command('setlocal filetype=diff')
@@ -136,7 +136,7 @@ class Kind(Base):
             ))
             self.vim.command('keepjumps normal! G')
             self.vim.command('keepjumps normal! gg')
-            self.vim.command('file gitn_diff_{0}'.format(t[0:7]))
+            self.vim.command('file {0}'.format(t[0:7]))
             self.vim.command('delete')
 
         self.vim.call('win_gotoid', prev_id)
