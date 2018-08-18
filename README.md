@@ -19,10 +19,12 @@ Show `git status` results
 Show `git log` results
 
 # TODO
-- Implement gitn menu command
+- Resolve [issues](https://github.com/kmnk/gitn/issues)
+- Add tests
 - Implement various subcommands of git !!!
     1. remote and branch
     2. config
     3. grep
+- Implement gitn menu command
 
 [denite]:https://github.com/Shougo/denite.nvim
