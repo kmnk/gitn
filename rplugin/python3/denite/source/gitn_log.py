@@ -66,7 +66,7 @@ class Source(Base):
                 '--pretty=format:":::%H:::%P:::%an:::%ae:::%ad:::%at:::%cn:::%ce:::%cd:::%ct:::%s:::"',
             ],
             'separator': ['--'],
-            'file': [''],
+            'file': [],
             'window': 'tab',
         }
 
@@ -76,7 +76,7 @@ class Source(Base):
         if len(context['args']) >= 1:
             self.vars['file'] = [context['args'][0]]
         else:
-            self.vars['file'] = ['']
+            self.vars['file'] = []
 
         if len(context['args']) >= 2:
             if Window.has(context['args'][1]):
