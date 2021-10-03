@@ -3,13 +3,13 @@ gitn is thin wrapper for using git on [Denite.nvim][denite] .
 
 # Requirements
 ## Plugins
-- [Denite.nvim][denite]
+- [denite.nvim][denite]
 - [vim-fugitive][fugitive]
 
 # Install
 ## by dein.vim
 ```vim
-call dein#add('kmnk/gitn')
+call dein#add('kmnk/gitn', {'depends': ['tpope/vim-fugitive']})
 ```
 
 # Features
