@@ -18,25 +18,33 @@ class Kind(OpenableFile):
         self.redraw_actions += ['add', 'reset_head', 'checkout', 'unstage']
 
     def action_add(self, context):
+        """add target files
+        """
         Gitn.system(self.vim, 'git add ' + self.__join(self.__to_paths(context['targets'])))
 
     def action_reset_head(self, context):
+        """reset head target files
+        """
         Gitn.system(self.vim, 'git reset HEAD ' + self.__join(self.__to_paths(context['targets'])))
 
     def action_commit(self, context):
-        Gitn.termopen(self.vim,
-            'git commit ' + self.__join(self.__to_paths(context['targets'])),
-            { 'startinsert': True })
+        """commit target files
+        """
+        self.vim.command('Git commit {0}'.format(self.__join(self.__to_paths(context['targets']))))
 
     def action_commit_amend(self, context):
-        Gitn.termopen(self.vim,
-            'git commit --amend ' + self.__join(self.__to_paths(context['targets'])),
-            { 'startinsert': True })
+        """commit amend target files
+        """
+        self.vim.command('Git commit --amend {0}'.format(self.__join(self.__to_paths(context['targets']))))
 
     def action_checkout(self, context):
+        """checkout target files
+        """
         Gitn.system(self.vim, 'git checkout ' + self.__join(self.__to_paths(context['targets'])))
 
     def action_diff(self, context):
+        """show diff target files
+        """
         diff = Gitn.system(self.vim, 'git diff ' + self.__join(self.__to_paths(context['targets'])))
         if len(diff) > 0:
             Gitn.open_window(self.vim, {
@@ -47,11 +55,15 @@ class Kind(OpenableFile):
             })
 
     def action_yank(self, context):
+        """yank target file paths
+        """
         Gitn.yank(self.vim, "\n".join([
             t['action__path'] for t in context['targets']
         ]))
 
     def action_diff_cached(self, context):
+        """show diff cached target files
+        """
         diff = Gitn.system(self.vim, 'git diff --cached ' + self.__join(self.__to_paths(context['targets'])))
         if len(diff) > 0:
             Gitn.open_window(self.vim, {
