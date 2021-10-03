@@ -1,30 +1,29 @@
 # gitn
-
-[![Join the chat at https://gitter.im/kmnk/gitn](https://badges.gitter.im/kmnk/gitn.svg)](https://gitter.im/kmnk/gitn?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-Gitn is [Denite.nvim][denite] source and kind set for using git
+gitn is thin wrapper for using git on [Denite.nvim][denite] .
 
 # Requirements
 ## Plugins
 - [Denite.nvim][denite]
+- [vim-fugitive][fugitive]
+
+# Install
+## by dein.vim
+```vim
+call dein#add('kmnk/gitn')
+```
 
 # Features
-## gitn(not implemented)
-Show implemented commands of gitn
-
-## gitn_status
+## `gitn_status`
 Show `git status` results
 
-## gitn_log
+## `gitn_log`
 Show `git log` results
 
 # TODO
-- Resolve [issues](https://github.com/kmnk/gitn/issues)
-- Add tests
-- Implement various subcommands of git !!!
-    1. remote and branch
-    2. config
-    3. grep
-- Implement gitn menu command
+- add `git branch` source and kind
+- add `git remote` source and kind
+- add `git config` source and kind
 
 [denite]:https://github.com/Shougo/denite.nvim
+[dein]:https://github.com/Shougo/dein.vim
+[fugitive]:https://github.com/tpope/vim-fugitive
