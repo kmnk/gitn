@@ -19,8 +19,10 @@ Show `git status` results
 ## `gitn_log`
 Show `git log` results
 
+## `gitn_branch`
+Show `git branch` result
+
 # TODO
-- add `git branch` source and kind
 - add `git remote` source and kind
 - add `git config` source and kind
 
