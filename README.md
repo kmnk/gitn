@@ -9,7 +9,7 @@ gitn is thin wrapper for using git on [Denite.nvim][denite] .
 # Install
 ## by dein.vim
 ```vim
-call dein#add('kmnk/gitn', {'depends': ['tpope/vim-fugitive']})
+call dein#add('kmnk/gitn', {'depends': ['Shougo/denite.nvim', 'tpope/vim-fugitive']})
 ```
 
 # Features

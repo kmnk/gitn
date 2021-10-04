@@ -21,17 +21,18 @@ class Kind(Base):
         self._preview_window_id = None
 
     def action_revert(self, context):
+        """revert tareget hashes
+        """
         targets = self.__sort_by_committer_time([t for t in context['targets'] if 'action__log' in t])
 
         if len(targets) == 0:
             return
 
-        Gitn.termopen(self.vim,
-            'git revert ' + self.__join(self.__to_hashes(targets)),
-            { 'startinsert': True })
-        pass
+        self.vim.command('Git revert ' + self.__join(self.__to_hashes(targets)))
 
     def action_reset(self, context):
+        """reset to target hash
+        """
         targets = self.__sort_by_committer_time([t for t in context['targets'] if 'action__log' in t])
 
         if len(targets) == 0:
@@ -39,11 +40,11 @@ class Kind(Base):
 
         commit = targets[0]['action__log']['hash']['own']
 
-        Gitn.termopen(self.vim,
-            'git reset {0}'.format(commit),
-            { 'startinsert': True })
+        Gitn.system(self.vim, 'git reset {0}'.format(commit))
 
     def action_reset_hard(self, context):
+        """reset hard to target hash
+        """
         targets = self.__sort_by_committer_time([t for t in context['targets'] if 'action__log' in t])
 
         if len(targets) == 0:
@@ -51,11 +52,11 @@ class Kind(Base):
 
         commit = targets[0]['action__log']['hash']['own']
 
-        Gitn.termopen(self.vim,
-            'git reset --hard {0}'.format(commit),
-            { 'startinsert': True, 'confirm': True })
+        Gitn.system(self.vim, 'git reset --hard {0}'.format(commit))
 
     def action_files(self, context):
+        """list changed files
+        """
         targets = [t for t in context['targets'] if 'action__log' in t]
         if len(targets) == 0:
             return
@@ -73,6 +74,8 @@ class Kind(Base):
             context['firstline'], context['lastline'])
 
     def action_diff(self, context):
+        """show diff
+        """
         targets = [t for t in context['targets'] if 'action__log' in t]
 
         f, t = self.__resolve_diff_range(context)
@@ -95,6 +98,8 @@ class Kind(Base):
             })
 
     def action_yank(self, context):
+        """yank hash
+        """
         Gitn.yank(self.vim, "\n".join([
             t['action__log']['hash']['own'] for t in context['targets'] if 'action__log' in t
         ]))
