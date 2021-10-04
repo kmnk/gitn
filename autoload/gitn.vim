@@ -13,3 +13,7 @@ function! gitn#put(string, ...)
     put=a:string
   endif
 endfunction
+
+function! gitn#current_branch()
+  return system('git branch --show-current')
+endfunction
