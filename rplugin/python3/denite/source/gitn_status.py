@@ -122,7 +122,20 @@ class Source(Base):
         commands += self.vars['separator']
 
         self.__proc = Process(commands, context, context['__directory'])
-        return self.__async_gather_candidates(context, 2.0)
+        candidates = self.__async_gather_candidates(context, 2.0)
+        candidates.insert(0, {
+            'word': '{1:<9} {3:1}{2:<9}:{0}'.format(
+                '[gitn:empty]',
+                TO_DISPLAY[Status.unmodified],
+                TO_DISPLAY[Status.unmodified],
+                ' '),
+            'action__path': '',
+            'action__paths': '',
+            'action__line': 0,
+            'action__col': 0,
+        })
+
+        return candidates
 
     def __async_gather_candidates(self, context, timeout):
         outs, errs = self.__proc.communicate(timeout=timeout)

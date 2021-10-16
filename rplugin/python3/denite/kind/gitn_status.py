@@ -30,12 +30,25 @@ class Kind(OpenableFile):
     def action_commit(self, context):
         """commit target files
         """
-        self.vim.command('Git commit {0}'.format(self.__join(self.__to_paths(context['targets']))))
+        try:
+            self.vim.command('Git commit {0}'.format(self.__join(self.__to_paths(context['targets']))))
+        except Exception as exc:
+            # should handle fugitive error. but how ? X(
+            pass
 
     def action_commit_amend(self, context):
         """commit amend target files
         """
-        self.vim.command('Git commit --amend {0}'.format(self.__join(self.__to_paths(context['targets']))))
+        try:
+            self.vim.command('Git commit --amend {0}'.format(self.__join(self.__to_paths(context['targets']))))
+        except Exception as exc:
+            # should handle fugitive error. but how ? X(
+            pass
+
+    def action_commit_allow_ampty(self, context):
+        """commit target files (allow empty)
+        """
+        self.vim.command('Git commit --allow-empty {0}'.format(self.__join(self.__to_paths(context['targets']))))
 
     def action_checkout(self, context):
         """checkout target files
