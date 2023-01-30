@@ -33,3 +33,7 @@ endfunction
 function! gitn#get_head_hash()
   return trim(system('git rev-parse HEAD'))
 endfunction
+
+function! gitn#get_toplevel()
+  return trim(system('git rev-parse --show-toplevel'))
+endfunction
